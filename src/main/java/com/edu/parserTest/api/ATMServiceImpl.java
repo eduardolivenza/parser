@@ -1,10 +1,20 @@
-public class ATMServiceImpl {
+package com.edu.parserTest.api;
 
+import com.edu.parserTest.business.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class ATMServiceImpl {
 
     private AccountService service;
 
-    public ATMServiceImpl(){
-        this.service = new AccountServiceImpl();
+    @Autowired
+    public ATMServiceImpl( AccountService core) {
+        this.service = core;
     }
 
     public void replenish(){}
@@ -34,6 +44,5 @@ o Allow withdrawals between 20 and 250 inclusive, in multiples of 5 o Disburse s
 
 o Always disburse at least one 5 note, if possible
     * */
-
 
 }

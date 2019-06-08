@@ -1,3 +1,5 @@
+package com.edu.parserTest.business;
+
 public class Account {
 
     private Integer accountId;
