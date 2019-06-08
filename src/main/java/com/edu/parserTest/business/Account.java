@@ -2,15 +2,15 @@ package com.edu.parserTest.business;
 
 public class Account {
 
-    private Integer accountId;
+    private String accountId;
 
     private Double balance;
 
-    public Account(Integer accountId) {
+    public Account(String accountId) {
         this.accountId = accountId;
     }
 
-    public Integer getAccountId() {
+    public String getAccountId() {
         return accountId;
     }
 

@@ -2,7 +2,7 @@ package com.edu.parserTest.business;
 
 public interface AccountService {
 
-    Double checkBalance(Integer accountIdentifier);
+    Double checkBalance(String accountIdentifier);
 
-    boolean withdrawAmount(Integer accountIdentifier, Integer quantity);
+    boolean withdrawAmount(String accountIdentifier, Integer quantity);
 }
