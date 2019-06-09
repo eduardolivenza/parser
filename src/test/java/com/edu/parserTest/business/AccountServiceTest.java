@@ -1,4 +1,4 @@
-package com.edu.parseTest.business;
+package com.edu.parserTest.business;
 
 import com.edu.parserTest.business.AccountService;
 import com.edu.parserTest.business.AccountServiceImpl;

@@ -44,7 +44,7 @@ class ATMServiceAPI {
     @RequestMapping("/withdrawal/{accountId}/{quantity}")
     @ResponseBody
     public CurrencyNotesVM withdrawal(@PathVariable String accountId, @PathVariable Integer quantity){
-        CurrencyNotesVM currencyNotesVM = null;
+        CurrencyNotesVM currencyNotesVM = new CurrencyNotesVM(0,0,0,0);
         try {
             currencyNotesVM = mapper.fromModelToVs(this.atm.withdrawal(accountId, quantity));
         } catch (Exception e) {

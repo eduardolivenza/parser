@@ -1,12 +1,8 @@
-package com.edu.parseTest.business;
+package com.edu.parserTest.business;
 
-import com.edu.parserTest.business.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,6 +21,23 @@ public class ATMServiceTest {
         Mockito.doReturn(true).when(mockAccountService).withdrawAmount(any(String.class), any(Integer.class));
         atmNotesController = Mockito.spy(new ATMNotesController(6,6,6,6));
         atmService = new ATMServiceImpl(mockAccountService, atmNotesController);
+    }
+
+    @Test
+    public void refurbishment() throws Exception {
+        atmNotesController = new ATMNotesController();
+        atmService = new ATMServiceImpl(mockAccountService, atmNotesController);
+        assertThrows(ATMHasNoFundsException.class, () -> {
+            atmService.withdrawal("01001", 55);
+        });
+        CurrencyNotesModel insertedMoney = new CurrencyNotesModel(1,1,1,1);
+        atmService.replenish( insertedMoney);
+        CurrencyNotesModel notes = atmService.withdrawal("01001", 55);
+        assertEquals(1, notes.getNotesOf50(), " We return 1 note of 50 when someone retrieves 55GBP");
+        assertEquals(1, notes.getNotesOf5(), " We return 1 note of 5 when someone retrieves 55GBP");
+        assertThrows(ATMHasNoFundsException.class, () -> {
+            atmService.withdrawal("01001", 55);
+        });
     }
 
     @Test
@@ -76,6 +89,13 @@ public class ATMServiceTest {
         assertThrows(ATMHasNoFundsException.class, () -> {
             atmService.withdrawal("01001", 40);
         });
+    }
+
+    @Test
+    public void check_balance() throws Exception {
+        String accountId = "01001";
+        Double value = 2738.59;
+        assertEquals((" ACCOUNT: " + accountId + " --> " + String.valueOf(value) + "GBP"), atmService.checkBalance(accountId));
     }
 
 
