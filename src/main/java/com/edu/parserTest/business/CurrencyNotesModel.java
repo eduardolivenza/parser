@@ -55,4 +55,21 @@ public class CurrencyNotesModel {
         this.notesOf50 = notesOf50;
     }
 
+    public void setNote(ATMNotes note, Integer amount) {
+        switch (note) {
+            case NoteOf5:
+                setNotesOf5(amount);
+                break;
+            case NoteOf10:
+                setNotesOf10(amount);
+                break;
+            case NoteOf20:
+                setNotesOf20(amount);
+                break;
+            case NoteOf50:
+                setNotesOf50(amount);
+                break;
+        }
+    }
+
 }

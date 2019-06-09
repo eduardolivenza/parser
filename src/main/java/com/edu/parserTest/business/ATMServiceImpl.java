@@ -3,9 +3,6 @@ package com.edu.parserTest.business;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
-enum ATMNotes { NoteOf5, NoteOf10, NoteOf20, NoteOf50 };
-
 @Component
 public class ATMServiceImpl implements ATMService{
 
@@ -48,40 +45,48 @@ public class ATMServiceImpl implements ATMService{
     private CurrencyNotesModel calculateBestNotes(Integer quantity) throws ATMHasNoFundsException
     {
         Integer remains = quantity;
-        int notesOf5 = 0, notesOf10 =0, notesOf20=0, notesOf50=0 ;
-        if (quantity >= 50) {
-            notesOf50 = quantity / 50;
-            if (checkAtmAvailability(ATMNotes.NoteOf50, notesOf50)) {
-                remains = quantity % 50;
+        CurrencyNotesModel returnedNotes = new CurrencyNotesModel();
+        if (checkAtmAvailability(ATMNotes.NoteOf5, 2)) {
+            if (quantity % 10 == 0){
+                returnedNotes.setNotesOf5(2);
             }
-        }
-        if (remains >= 20) {
-            notesOf20 = remains / 20;
-            if (checkAtmAvailability(ATMNotes.NoteOf20, notesOf20)) {
-                remains = quantity % 20;
+            else{
+                returnedNotes.setNotesOf5(1);
             }
+            remains = quantity - (returnedNotes.getNotesOf5() * 5);
         }
-        if (remains >= 10) {
-            notesOf10 = remains / 10;
-            if (checkAtmAvailability(ATMNotes.NoteOf10, notesOf10)) {
-                remains = quantity % 10;
-            }
-        }
+        remains = checkNotes(ATMNotes.NoteOf50, 50, returnedNotes, remains);
+        remains = checkNotes(ATMNotes.NoteOf20, 20, returnedNotes, remains);
+        remains = checkNotes(ATMNotes.NoteOf10, 10, returnedNotes, remains);
         if (remains >= 5){
-            notesOf5 = remains / 5;
-            if (checkAtmAvailability(ATMNotes.NoteOf5, notesOf5)) {
-                atmNotesController.setNotesOf5(atmNotesController.getNotesOf5()-notesOf5);
-                atmNotesController.setNotesOf10(atmNotesController.getNotesOf10()-notesOf10);
-                atmNotesController.setNotesOf20(atmNotesController.getNotesOf20()-notesOf20);
-                atmNotesController.setNotesOf50(atmNotesController.getNotesOf50()-notesOf50);
+            returnedNotes.setNotesOf5(returnedNotes.getNotesOf5() + (remains / 5));
+            if (checkAtmAvailability(ATMNotes.NoteOf5, returnedNotes.getNotesOf5())) {
+                updateAtmMoney(returnedNotes);
             }
             else {
                 throw new ATMHasNoFundsException();
             }
         }
-        return new CurrencyNotesModel(notesOf5,notesOf10,notesOf20,notesOf50);
+        return returnedNotes;
     }
 
+    private Integer checkNotes(ATMNotes note, int noteValue, CurrencyNotesModel notesModel, Integer remains){
+         if (remains >= noteValue) {
+             int notesAmount = remains / noteValue;
+             if (checkAtmAvailability(note, notesAmount)) {
+                 remains = remains % noteValue;
+                 notesModel.setNote(note, notesAmount);
+             }
+         }
+         return remains;
+    }
+
+    private void updateAtmMoney(CurrencyNotesModel model){
+        atmNotesController.setNotesOf5(atmNotesController.getNotesOf5()- model.getNotesOf5());
+        atmNotesController.setNotesOf10(atmNotesController.getNotesOf10()-model.getNotesOf10());
+        atmNotesController.setNotesOf20(atmNotesController.getNotesOf20()-model.getNotesOf20());
+        atmNotesController.setNotesOf50(atmNotesController.getNotesOf50()-model.getNotesOf50());
+    }
 
     private boolean checkAtmAvailability(ATMNotes note, Integer amount) {
         boolean isAvailable = false;
