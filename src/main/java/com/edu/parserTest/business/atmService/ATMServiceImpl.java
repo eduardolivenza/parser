@@ -1,5 +1,7 @@
-package com.edu.parserTest.business;
+package com.edu.parserTest.business.atmService;
 
+import com.edu.parserTest.business.accountService.AccountService;
+import com.edu.parserTest.business.accountService.NotExistingAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,11 +27,16 @@ public class ATMServiceImpl implements ATMService{
 
     public String checkBalance( String accountId)
     {
-        Double value = accountService.checkBalance(accountId);
-        return " ACCOUNT: " + accountId + " --> " + value + "GBP";
+        Double value = null;
+        try {
+            value = accountService.checkBalance(accountId);
+            return " ACCOUNT: " + accountId + " --> " + value + "GBP";
+        } catch (NotExistingAccountException e) {
+            return e.getMessage();
+        }
     }
 
-    public CurrencyNotesModel withdrawal( String accountId,  Integer quantity) throws IncorrectAmountException, NotAvailableAmountException, ATMHasNoFundsException {
+    public CurrencyNotesModel withdrawal( String accountId,  Integer quantity) throws Exception {
         if ((quantity > 250) || (quantity < 20) ||( quantity % 5 != 0))
         {
             throw new IncorrectAmountException();
@@ -50,7 +57,7 @@ public class ATMServiceImpl implements ATMService{
             if (quantity % 10 == 0){
                 returnedNotes.setNotesOf5(2);
             }
-            else{
+            else {
                 returnedNotes.setNotesOf5(1);
             }
             remains = quantity - (returnedNotes.getNotesOf5() * 5);
@@ -58,14 +65,12 @@ public class ATMServiceImpl implements ATMService{
         remains = checkNotes(ATMNotes.NoteOf50, 50, returnedNotes, remains);
         remains = checkNotes(ATMNotes.NoteOf20, 20, returnedNotes, remains);
         remains = checkNotes(ATMNotes.NoteOf10, 10, returnedNotes, remains);
-        if (remains >= 5){
-            returnedNotes.setNotesOf5(returnedNotes.getNotesOf5() + (remains / 5));
-            if (checkAtmAvailability(ATMNotes.NoteOf5, returnedNotes.getNotesOf5())) {
+        remains = checkNotes(ATMNotes.NoteOf5, 5, returnedNotes, remains);
+        if (remains >0) {
+            throw new ATMHasNoFundsException();
+        }
+        else{
                 updateAtmMoney(returnedNotes);
-            }
-            else {
-                throw new ATMHasNoFundsException();
-            }
         }
         return returnedNotes;
     }

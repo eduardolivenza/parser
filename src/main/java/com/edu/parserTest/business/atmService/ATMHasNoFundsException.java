@@ -1,4 +1,4 @@
-package com.edu.parserTest.business;
+package com.edu.parserTest.business.atmService;
 
 public class ATMHasNoFundsException extends Exception {
     public  ATMHasNoFundsException(){

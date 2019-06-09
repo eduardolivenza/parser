@@ -1,5 +1,9 @@
 package com.edu.parserTest.business;
 
+import com.edu.parserTest.business.atmService.*;
+import com.edu.parserTest.business.accountService.AccountService;
+import com.edu.parserTest.business.accountService.AccountServiceImpl;
+import com.edu.parserTest.business.accountService.NotExistingAccountException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,10 +17,10 @@ public class ATMServiceTest {
 
     private ATMNotesController atmNotesController;
     private ATMService atmService;
-    private  AccountService mockAccountService;
+    private AccountService mockAccountService;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() throws NotExistingAccountException {
         mockAccountService = Mockito.spy(new AccountServiceImpl());
         Mockito.doReturn(true).when(mockAccountService).withdrawAmount(any(String.class), any(Integer.class));
         atmNotesController = Mockito.spy(new ATMNotesController(6,6,6,6));
@@ -75,7 +79,7 @@ public class ATMServiceTest {
     }
 
     @Test
-    public void trying_to_withdrawal_from_no_funds_accounts(){
+    public void trying_to_withdrawal_from_no_funds_accounts() throws NotExistingAccountException {
         Mockito.doReturn(false).when(mockAccountService).withdrawAmount(any(String.class), any(Integer.class));
         assertThrows(NotAvailableAmountException.class, () -> {
             atmService.withdrawal("01003", 40);

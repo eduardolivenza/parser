@@ -1,4 +1,4 @@
-package com.edu.parserTest.business;
+package com.edu.parserTest.business.atmService;
 
 public interface ATMService {
 

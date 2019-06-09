@@ -1,7 +1,8 @@
 package com.edu.parserTest.business;
 
-import com.edu.parserTest.business.AccountService;
-import com.edu.parserTest.business.AccountServiceImpl;
+import com.edu.parserTest.business.accountService.AccountService;
+import com.edu.parserTest.business.accountService.AccountServiceImpl;
+import com.edu.parserTest.business.accountService.NotExistingAccountException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,20 +16,20 @@ public class AccountServiceTest {
         accountService = new AccountServiceImpl();
     }
     @Test
-    public void check_initial_balances_test() {
+    public void check_initial_balances_test() throws NotExistingAccountException {
         assertEquals((double)(accountService.checkBalance("01001")), 2738.59, "Initial amount for account 1 is the expected");
         assertEquals((double)(accountService.checkBalance("01002")), 23.00, "Initial amount for account 1 is the expected");
         assertEquals((double)(accountService.checkBalance("01003")), 0.0, "Initial amount for account 1 is the expected");
     }
 
     @Test
-    public void check_withdraw_accepted() {
+    public void check_withdraw_accepted() throws NotExistingAccountException {
         assertEquals(true, accountService.withdrawAmount("01001", 10),  " Withdrawal of 10gbp was accepted");
         assertEquals((double)(accountService.checkBalance("01001")), 2738.59 - 10, " Amount of the account was reduced 10GBP");
     }
 
     @Test
-    public void check_withdraw_rejected() {
+    public void check_withdraw_rejected() throws NotExistingAccountException {
         assertEquals(false, accountService.withdrawAmount("01002", 30),  " Withdrawal of 10gbp was rejected");
         assertEquals((double)(accountService.checkBalance("01002")), 23, " Amount of the account was not modified");
     }

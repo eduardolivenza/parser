@@ -1,8 +1,9 @@
 package com.edu.parserTest.api;
 
-import com.edu.parserTest.business.ATMService;
+import com.edu.parserTest.business.atmService.ATMService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,8 @@ class ATMServiceAPI {
 
     @RequestMapping("/")
     @ResponseBody
-    String root() {
-        return "Hello, I'm your ATM";
+    String root(@Value("${atm.welcome_message}") String welcomeMessage) {
+        return welcomeMessage;
     }
 
     @PostMapping("/replenish")
@@ -48,7 +49,7 @@ class ATMServiceAPI {
         try {
             currencyNotesVM = mapper.fromModelToVs(this.atm.withdrawal(accountId, quantity));
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return  currencyNotesVM;
     }

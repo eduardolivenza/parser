@@ -1,6 +1,4 @@
-package com.edu.parserTest.business;
-
-import org.springframework.stereotype.Component;
+package com.edu.parserTest.business.atmService;
 
 public class CurrencyNotesModel {
 

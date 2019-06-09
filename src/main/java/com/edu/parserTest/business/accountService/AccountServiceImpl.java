@@ -1,12 +1,8 @@
-package com.edu.parserTest.business;
+package com.edu.parserTest.business.accountService;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -20,13 +16,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    public Double checkBalance( String accountIdentifier) {
-        return this.accounts.get(accountIdentifier).getBalance();
+    public Double checkBalance( String accountIdentifier) throws NotExistingAccountException {
+        Account account = checkAccountExists(accountIdentifier);
+        return account.getBalance();
     }
 
-    public boolean withdrawAmount(String accountIdentifier, Integer quantity) {
+    private Account checkAccountExists(String accountIdentifier) throws NotExistingAccountException {
+        if (this.accounts.containsKey(accountIdentifier)){
+            return this.accounts.get(accountIdentifier);
+        }else{
+            throw new NotExistingAccountException(accountIdentifier);
+        }
+    }
 
-        Account account = this.accounts.get(accountIdentifier);
+    public boolean withdrawAmount(String accountIdentifier, Integer quantity) throws NotExistingAccountException {
+
+        Account account = checkAccountExists(accountIdentifier);
         Double remaining = account.getBalance() - quantity;
         if ( remaining> 0) {
             account.setBalance(remaining);

@@ -1,6 +1,6 @@
 package com.edu.parserTest.api;
 
-import com.edu.parserTest.business.CurrencyNotesModel;
+import com.edu.parserTest.business.atmService.CurrencyNotesModel;
 import org.springframework.stereotype.Component;
 
 @Component
