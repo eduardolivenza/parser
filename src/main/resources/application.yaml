@@ -1,0 +1,5 @@
+atm:
+  welcome_message: "Hello, I'm your ATM"
+
+server:
+  port: 8083
